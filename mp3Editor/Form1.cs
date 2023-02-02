@@ -58,13 +58,13 @@ using (var engine = new Engine())
         }
 
         //function
-        YouTubeVideo vid;
+        
         private void SaveMP3(string SaveToFolder, string VideoURL, string MP3Name)
         {
             var source = @SaveToFolder;
             var youtube = YouTube.Default;
-            vid = youtube.GetVideo(VideoURL)
-
+            var vid = youtube.GetVideo(VideoURL);
+            vid2 = vid;
             Thread VideoDownload = new Thread(Downloading);
 
             string vediopath = Path.Combine(source, vid.FullName);
@@ -80,11 +80,12 @@ using (var engine = new Engine())
                 engine.Convert(inputFile, outputFile);
             }
         }
-
+        Video vid2;
         private void Downloading()
         {
+            
             VideoClient videoClient = new VideoClient();
-            using (var Stream = videoClient.Stream(vid))
+            using (var Stream = videoClient.Stream(vid2))
             {
                 
             }
