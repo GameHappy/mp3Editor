@@ -45,7 +45,19 @@ using (var engine = new Engine())
          */
         private void URL_btn_Click(object sender, EventArgs e)
         {
-            SaveMP3(SelectFolder_lab.Text, URL_txt.Text,"1");
+            YoutubeDownload_StatueLab.Text = "Downloading...";
+            URL_btn.Enabled = false;
+            SelectFolder_btn.Enabled = false;
+            URL_txt.Enabled = false;
+            SaveToMp3_txt.Enabled = false;
+            
+            //Check input Format
+            //YoutubeDownload_StatueLab.Text = Uri.IsWellFormedUriString(URL_txt.Text,UriKind.Relative).ToString();
+            //if(SelectFolder_lab.Text != )
+            Thread T1 = new Thread(SaveMP3);
+            T1.Start();
+            //SaveMP3(SelectFolder_lab.Text, URL_txt.Text,"1");
+            
         }
 
         private void SelectFolder_btn_Click(object sender, EventArgs e)
@@ -59,33 +71,42 @@ using (var engine = new Engine())
 
         //function
         
-        private void SaveMP3(string SaveToFolder, string VideoURL, string MP3Name)
+        private void SaveMP3()
         {
-            var source = @SaveToFolder;
+            var source = SelectFolder_lab.Text;
             var youtube = YouTube.Default;
-            var vid = youtube.GetVideo(VideoURL);
-            vid2 = vid;
+            var vid = youtube.GetVideo(URL_txt.Text);
             Thread VideoDownload = new Thread(Downloading);
 
             string vediopath = Path.Combine(source, vid.FullName);
             VideoDownload.Start();
             File.WriteAllBytes(vediopath, vid.GetBytes());
             VideoDownload.Abort();
+
+            //mp4 to mp3
             var inputFile = new MediaFile { Filename = vediopath };
-            var outputFile = new MediaFile { Filename = Path.Combine(source, $"{MP3Name}.mp3")};
+            var outputFile = new MediaFile { Filename = Path.Combine(source, $"{SaveToMp3_txt.Text}.mp3")};
             using (var engine = new Engine())
             {
                 engine.GetMetadata(inputFile);
 
                 engine.Convert(inputFile, outputFile);
             }
+
+
+            YoutubeDownload_StatueLab.Text = "Done";
+            URL_btn.Enabled = true;
+            SelectFolder_btn.Enabled = true;
+            URL_txt.Enabled = true;
+            SaveToMp3_txt.Enabled = true;
+
+
         }
-        Video vid2;
         private void Downloading()
         {
             
             VideoClient videoClient = new VideoClient();
-            using (var Stream = videoClient.Stream(vid2))
+            //using (var Stream = videoClient.Stream(vid))
             {
                 
             }
