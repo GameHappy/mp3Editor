@@ -12,6 +12,8 @@ using VideoLibrary;
 using MediaToolkit.Model;
 using MediaToolkit;
 using System.Threading;
+using static mp3Editor.semicircle;
+
 
 namespace mp3Editor
 {
@@ -68,9 +70,24 @@ using (var engine = new Engine())
                     SelectFolder_lab.Text = fbd.SelectedPath;
             }
         }
+        private void Selectmp3_btn_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    Selectmp3_lab.Text = openFileDialog.FileName;
+                    if (Selectmp3_lab.Text.Substring(Selectmp3_lab.Text.Length - 4) == ".mp3")
+                    {
+                        LoadMP3();
+                    }
+                }
+            }
+        }
 
         //function
-        
+
         private void SaveMP3()
         {
             var source = SelectFolder_lab.Text;
@@ -102,14 +119,16 @@ using (var engine = new Engine())
 
 
         }
-        private void Downloading()
+        
+        private void LoadMP3()
         {
             
-            VideoClient videoClient = new VideoClient();
-            //using (var Stream = videoClient.Stream(vid))
-            {
-                
-            }
+        }
+
+        
+        private void VolumeBar_Scroll(object sender, ScrollEventArgs e)
+        {
+            Volume_lab2.Text = VolumeBar.Value.ToString()+"%";
         }
     }
 }
