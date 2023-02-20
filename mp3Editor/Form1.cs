@@ -12,6 +12,7 @@ using VideoLibrary;
 using MediaToolkit.Model;
 using MediaToolkit;
 using System.Threading;
+using NAudio.Wave;
 using static mp3Editor.semicircle;
 
 
@@ -26,7 +27,6 @@ namespace mp3Editor
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
         }
         /*
          var source = @"<your destination folder>";
@@ -67,19 +67,22 @@ using (var engine = new Engine())
             using (var fbd = new FolderBrowserDialog()){
                 DialogResult result = fbd.ShowDialog();
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
                     SelectFolder_lab.Text = fbd.SelectedPath;
+                }
             }
         }
         private void Selectmp3_btn_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-
+                
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     Selectmp3_lab.Text = openFileDialog.FileName;
                     if (Selectmp3_lab.Text.Substring(Selectmp3_lab.Text.Length - 4) == ".mp3")
                     {
+                        mp3_save_txt.Text = openFileDialog.SafeFileName;
                         LoadMP3();
                     }
                 }
@@ -93,12 +96,9 @@ using (var engine = new Engine())
             var source = SelectFolder_lab.Text;
             var youtube = YouTube.Default;
             var vid = youtube.GetVideo(URL_txt.Text);
-            Thread VideoDownload = new Thread(Downloading);
 
             string vediopath = Path.Combine(source, vid.FullName);
-            VideoDownload.Start();
             File.WriteAllBytes(vediopath, vid.GetBytes());
-            VideoDownload.Abort();
 
             //mp4 to mp3
             var inputFile = new MediaFile { Filename = vediopath };
@@ -122,13 +122,28 @@ using (var engine = new Engine())
         
         private void LoadMP3()
         {
-            
+            mp3_name_lab.Text = "Name: " + mp3_save_txt.Text;
+            var reader = new Mp3FileReader(Selectmp3_lab.Text); 
+            Mp3Frame Frame = reader.ReadNextFrame();
+            MessageBox.Show("mp3_BitRate: " + Frame.BitRate.ToString() + "\nFrameLength: " + Frame.FrameLength.ToString());
+
+            mp3_length_lab.Text = reader.TotalTime.ToString();
+            mp3_length_lab.Text = mp3_length_lab.Text.Substring(0, mp3_length_lab.Text.IndexOf("."));
         }
 
         
         private void VolumeBar_Scroll(object sender, ScrollEventArgs e)
         {
             Volume_lab2.Text = VolumeBar.Value.ToString()+"%";
+        }
+
+        private void trackBar1_Scroll(object sender, EventArgs e)
+        {
+        }
+
+        private void clip_interval_txt_TextChanged(object sender, EventArgs e)
+        {
+            trackBar1.SmallChange = int.Parse(clip_interval_txt.Text);
         }
     }
 }
