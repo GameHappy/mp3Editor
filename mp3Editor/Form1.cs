@@ -28,23 +28,7 @@ namespace mp3Editor
         private void Form1_Load(object sender, EventArgs e)
         {
         }
-        /*
-         var source = @"<your destination folder>";
-var youtube = YouTube.Default;
-var vid = youtube.GetVideo("<video url>");
-File.WriteAllBytes(source + vid.FullName, vid.GetBytes());
-
-var inputFile = new MediaFile { Filename = source + vid.FullName };
-var outputFile = new MediaFile { Filename = $"{source + vid.FullName}.mp3" };
-
-using (var engine = new Engine())
-{
-    engine.GetMetadata(inputFile);
-
-    engine.Convert(inputFile, outputFile);
-}
-         
-         */
+       
         private void URL_btn_Click(object sender, EventArgs e)
         {
             YoutubeDownload_StatueLab.Text = "Downloading...";
@@ -89,6 +73,56 @@ using (var engine = new Engine())
             }
         }
 
+        private void mp3_save_btn_Click(object sender, EventArgs e)
+        {
+            if (mp3_save_path_lab.Text != "" && mp3_save_txt.Text != "") Mp3Clip();
+            else MessageBox.Show("please setting path and name.");
+        }
+
+        WaveOut waveOut = new WaveOut();
+        private void VolumeBar_Scroll(object sender, ScrollEventArgs e)
+        {
+            //Volume_lab2.Text = VolumeBar.Value.ToString() + "%";
+            
+            float V = (float)VolumeBar.Value / 100f;
+            waveOut.Volume = V;
+            Volume_lab2.Text = ((int)(waveOut.Volume * 100)).ToString() + "%";
+
+        }
+
+        private void mp3_play_btn_Click(object sender, EventArgs e)
+        {
+            waveOut.Play();
+            
+        }
+
+        private void mp3_stop_btn_Click(object sender, EventArgs e)
+        {
+            waveOut.Stop();
+            
+        }
+
+        private void trackBar1_Scroll(object sender, EventArgs e)
+        {
+        }
+
+        private void clip_interval_txt_TextChanged(object sender, EventArgs e)
+        {
+            trackBar1.SmallChange = int.Parse(clip_interval_txt.Text);
+        }
+
+        private void mp3_save_path_btn_Click(object sender, EventArgs e)
+        {
+            using (var fbd = new FolderBrowserDialog())
+            {
+                DialogResult result = fbd.ShowDialog();
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
+                    mp3_save_path_lab.Text = fbd.SelectedPath;
+                }
+            }
+        }
+
         //function
 
         private void SaveMP3()
@@ -119,31 +153,42 @@ using (var engine = new Engine())
 
 
         }
-        
+        Mp3FileReader reader;
         private void LoadMP3()
         {
             mp3_name_lab.Text = "Name: " + mp3_save_txt.Text;
-            var reader = new Mp3FileReader(Selectmp3_lab.Text); 
-            Mp3Frame Frame = reader.ReadNextFrame();
-            MessageBox.Show("mp3_BitRate: " + Frame.BitRate.ToString() + "\nFrameLength: " + Frame.FrameLength.ToString());
-
+            reader = new Mp3FileReader(Selectmp3_lab.Text); 
             mp3_length_lab.Text = reader.TotalTime.ToString();
             mp3_length_lab.Text = mp3_length_lab.Text.Substring(0, mp3_length_lab.Text.IndexOf("."));
+
+            waveOut.DeviceNumber = 0;
+            waveOut.Init(reader);
+            VolumeBar.Value = (int)waveOut.Volume*100;
+            Volume_lab2.Text = VolumeBar.Value.ToString();
+            
         }
 
-        
-        private void VolumeBar_Scroll(object sender, ScrollEventArgs e)
+        private void Mp3Clip()
         {
-            Volume_lab2.Text = VolumeBar.Value.ToString()+"%";
+            TimeSpan begin = TimeSpan.FromMinutes(1);
+            TimeSpan end = TimeSpan.FromMinutes(1);
+            string outputPath = Path.Combine(mp3_save_path_lab.Text, $"{mp3_save_txt.Text}.mp3");
+            if (begin > end)
+                throw new ArgumentOutOfRangeException("end", "end should be greater than begin");
+
+            using (var writer = File.Create(outputPath))
+            {
+                Mp3Frame frame;
+                
+                while ((frame = reader.ReadNextFrame()) != null)
+                    if (reader.CurrentTime >= begin)
+                    {
+                        if (reader.CurrentTime <= end)
+                            writer.Write(frame.RawData, 0, frame.RawData.Length);
+                        else break;
+                    }
+            }
         }
 
-        private void trackBar1_Scroll(object sender, EventArgs e)
-        {
-        }
-
-        private void clip_interval_txt_TextChanged(object sender, EventArgs e)
-        {
-            trackBar1.SmallChange = int.Parse(clip_interval_txt.Text);
-        }
     }
 }

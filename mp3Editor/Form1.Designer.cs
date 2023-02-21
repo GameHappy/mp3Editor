@@ -53,6 +53,10 @@ namespace mp3Editor
             this.mp3_path_lab = new System.Windows.Forms.Label();
             this.mp3_clip_lab = new System.Windows.Forms.Label();
             this.clip_interval_txt = new System.Windows.Forms.TextBox();
+            this.mp3_save_path_lab = new System.Windows.Forms.Label();
+            this.mp3_save_path_btn = new System.Windows.Forms.Button();
+            this.Test_ClipMin_txt = new System.Windows.Forms.TextBox();
+            this.Test_ClipMax_txt = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.SuspendLayout();
@@ -220,6 +224,7 @@ namespace mp3Editor
             this.mp3_play_btn.TabIndex = 15;
             this.mp3_play_btn.Text = "Play";
             this.mp3_play_btn.UseVisualStyleBackColor = true;
+            this.mp3_play_btn.Click += new System.EventHandler(this.mp3_play_btn_Click);
             // 
             // mp3_stop_btn
             // 
@@ -229,19 +234,21 @@ namespace mp3Editor
             this.mp3_stop_btn.TabIndex = 16;
             this.mp3_stop_btn.Text = "Stop";
             this.mp3_stop_btn.UseVisualStyleBackColor = true;
+            this.mp3_stop_btn.Click += new System.EventHandler(this.mp3_stop_btn_Click);
             // 
             // mp3_save_btn
             // 
-            this.mp3_save_btn.Location = new System.Drawing.Point(285, 415);
+            this.mp3_save_btn.Location = new System.Drawing.Point(347, 415);
             this.mp3_save_btn.Name = "mp3_save_btn";
             this.mp3_save_btn.Size = new System.Drawing.Size(42, 23);
             this.mp3_save_btn.TabIndex = 17;
             this.mp3_save_btn.Text = "Save";
             this.mp3_save_btn.UseVisualStyleBackColor = true;
+            this.mp3_save_btn.Click += new System.EventHandler(this.mp3_save_btn_Click);
             // 
             // mp3_save_txt
             // 
-            this.mp3_save_txt.Location = new System.Drawing.Point(179, 415);
+            this.mp3_save_txt.Location = new System.Drawing.Point(241, 415);
             this.mp3_save_txt.Name = "mp3_save_txt";
             this.mp3_save_txt.Size = new System.Drawing.Size(100, 20);
             this.mp3_save_txt.TabIndex = 7;
@@ -273,11 +280,47 @@ namespace mp3Editor
             this.clip_interval_txt.Text = "1";
             this.clip_interval_txt.TextChanged += new System.EventHandler(this.clip_interval_txt_TextChanged);
             // 
+            // mp3_save_path_lab
+            // 
+            this.mp3_save_path_lab.AutoSize = true;
+            this.mp3_save_path_lab.Location = new System.Drawing.Point(290, 396);
+            this.mp3_save_path_lab.Name = "mp3_save_path_lab";
+            this.mp3_save_path_lab.Size = new System.Drawing.Size(0, 13);
+            this.mp3_save_path_lab.TabIndex = 23;
+            // 
+            // mp3_save_path_btn
+            // 
+            this.mp3_save_path_btn.Location = new System.Drawing.Point(241, 391);
+            this.mp3_save_path_btn.Name = "mp3_save_path_btn";
+            this.mp3_save_path_btn.Size = new System.Drawing.Size(43, 23);
+            this.mp3_save_path_btn.TabIndex = 24;
+            this.mp3_save_path_btn.Text = "Path:";
+            this.mp3_save_path_btn.UseVisualStyleBackColor = true;
+            this.mp3_save_path_btn.Click += new System.EventHandler(this.mp3_save_path_btn_Click);
+            // 
+            // Test_ClipMin_txt
+            // 
+            this.Test_ClipMin_txt.Location = new System.Drawing.Point(227, 269);
+            this.Test_ClipMin_txt.Name = "Test_ClipMin_txt";
+            this.Test_ClipMin_txt.Size = new System.Drawing.Size(100, 20);
+            this.Test_ClipMin_txt.TabIndex = 25;
+            // 
+            // Test_ClipMax_txt
+            // 
+            this.Test_ClipMax_txt.Location = new System.Drawing.Point(227, 301);
+            this.Test_ClipMax_txt.Name = "Test_ClipMax_txt";
+            this.Test_ClipMax_txt.Size = new System.Drawing.Size(100, 20);
+            this.Test_ClipMax_txt.TabIndex = 26;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(438, 455);
+            this.Controls.Add(this.Test_ClipMax_txt);
+            this.Controls.Add(this.Test_ClipMin_txt);
+            this.Controls.Add(this.mp3_save_path_btn);
+            this.Controls.Add(this.mp3_save_path_lab);
             this.Controls.Add(this.clip_interval_txt);
             this.Controls.Add(this.mp3_clip_lab);
             this.Controls.Add(this.mp3_path_lab);
@@ -332,6 +375,10 @@ namespace mp3Editor
         private System.Windows.Forms.Label mp3_path_lab;
         private System.Windows.Forms.Label mp3_clip_lab;
         private System.Windows.Forms.TextBox clip_interval_txt;
+        private System.Windows.Forms.Label mp3_save_path_lab;
+        private System.Windows.Forms.Button mp3_save_path_btn;
+        private System.Windows.Forms.TextBox Test_ClipMin_txt;
+        private System.Windows.Forms.TextBox Test_ClipMax_txt;
     }
 }
 
